@@ -43,22 +43,23 @@ Example: If your .snippet files are in a folder named snippets and you want the 
 
 ### Example
 
-Input (example.snippet):
+#### Input (example.snippets):
+**(Kindly see format properly otherwise it will skip some of your snippets)**
 
     snippet temp_date "Template with Date and Author"
-    #  author: violist
+    #  author: Morpheous_leo
     #  created: `date +%d.%m.%Y" "%R:%S`
     import sys
     input = sys.stdin.readline
     endsnippet
 
-Output (converted_snippets/example.json):
+#### Output (converted_snippets/example.json):
 
     {
         "Template with Date and Author": {
             "prefix": "temp_date",
             "body": [
-                "#  author: violist",
+                "#  author: Morpheous_leo",
                 "#  created: `date +%d.%m.%Y\" \"%R:%S`",
                 "",
                 "import sys",
@@ -73,8 +74,8 @@ Output (converted_snippets/example.json):
     .
     ├── snippet_converter.py       # Python script
     ├── snippets/                  # Input directory (contains .snippet files)
-    │   ├── example.snippet
-    │   └── another_example.snippet
+    │   ├── example.snippets
+    │   └── another_example.snippets
     ├── converted_snippets/        # Output directory (created automatically)
     │   ├── example.json
     │   └── another_example.json
