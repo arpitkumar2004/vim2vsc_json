@@ -7,47 +7,57 @@ from tqdm import tqdm
 def convert_snippet_to_vscode(snippet_file, output_dir):
     """
     Converts a single .snippet file into a VS Code JSON snippet file.
+    The code is preserved with indentation as it appears in the input file.
 
     Args:
         snippet_file (str): Path to the .snippet file.
         output_dir (str): Directory where the converted JSON file will be saved.
     """
     snippets = {}
-    with open(snippet_file, "r") as file:
-        lines = file.readlines()
+    try:
+        with open(snippet_file, "r") as file:
+            lines = file.readlines()
 
-    current_snippet = {}
-    for line in lines:
-        line = line.strip()
+        current_snippet = {}
+        for line in lines:
+            line = line.rstrip("\n")  # Keep indentation by stripping only the newline
 
-        # Detect the start of a snippet
-        if line.startswith("snippet"):
-            parts = line.split(" ", 2)
-            trigger = parts[1] if len(parts) > 1 else "unknown"
-            description = parts[2].strip('"') if len(parts) > 2 else "No description"
-            current_snippet = {
-                "prefix": trigger,
-                "body": [],
-                "description": description
-            }
+            # Detect the start of a snippet
+            if line.startswith("snippet"):
+                parts = line.split(" ", 2)
+                trigger = parts[1] if len(parts) > 1 else "unknown"
+                description = parts[2].strip('"') if len(parts) > 2 else "No description"
+                current_snippet = {
+                    "prefix": trigger,
+                    "body": [],
+                    "description": description
+                }
 
-        # Add body lines
-        elif current_snippet and line != "endsnippet":
-            current_snippet["body"].append(line)
+            # Add body lines
+            elif current_snippet and line != "endsnippet":
+                current_snippet["body"].append(line)  # Add the line exactly as it is
 
-        # End of the snippet
-        elif line == "endsnippet":
-            snippets[current_snippet["description"]] = current_snippet
+            # End of the snippet
+            elif line == "endsnippet":
+                if current_snippet:
+                    snippets[current_snippet["description"]] = current_snippet
+                current_snippet = {}
 
-    # Output JSON file name (based on the .snippet file name)
-    output_file = os.path.join(output_dir, f"{os.path.basename(snippet_file).replace('.snippet', '.json')}")
+        if not snippets:
+            print(f"Warning: No valid snippets found in {snippet_file}")
+            return
 
-    # Write to the output JSON file
-    with open(output_file, "w") as out_file:
-        json.dump(snippets, out_file, indent=4)
+        # Output JSON file name (based on the .snippet file name)
+        output_file = os.path.join(output_dir, f"{os.path.basename(snippet_file).replace('.snippet', '.json').replace('.snippets', '.json')}")
 
-    print(f"Converted: {snippet_file} -> {output_file}")
+        # Write to the output JSON file
+        with open(output_file, "w") as out_file:
+            json.dump(snippets, out_file, indent=4)
 
+        print(f"Converted: {snippet_file} -> {output_file}")
+    
+    except Exception as e:
+        print(f"Error processing {snippet_file}: {e}")
 
 def bulk_convert_snippets(input_dir, output_dir):
     """
@@ -60,15 +70,19 @@ def bulk_convert_snippets(input_dir, output_dir):
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
 
-    snippet_files = [f for f in os.listdir(input_dir) if f.endswith(".snippet")]
+    print(f"Looking for .snippet or .snippets files in: {input_dir}")
+    files_in_dir = os.listdir(input_dir)
+    print(f"Files found: {files_in_dir}")
+
+    # Modify file matching to include both .snippet and .snippets files (case-insensitive)
+    snippet_files = [f for f in files_in_dir if f.lower().endswith((".snippet", ".snippets"))]
 
     if not snippet_files:
-        print(f"No .snippet files found in {input_dir}")
+        print(f"No .snippet or .snippets files found in {input_dir}")
         return
 
-    # Initialize progress tracking
     total_snippets = len(snippet_files)
-    print(f"Total .snippet files to process: {total_snippets}")
+    print(f"Total .snippet or .snippets files to process: {total_snippets}")
 
     start_time = time.time()
 
@@ -84,8 +98,7 @@ def bulk_convert_snippets(input_dir, output_dir):
             print(f"Processed {i + 1}/{total_snippets} snippets. Time left: {format_time(estimated_time_remaining)}")
 
     total_time = time.time() - start_time
-    print(f"All .snippet files have been converted. Total time: {format_time(total_time)}")
-
+    print(f"All .snippet or .snippets files have been converted. Total time: {format_time(total_time)}")
 
 def format_time(seconds):
     """
@@ -101,7 +114,6 @@ def format_time(seconds):
     minutes = int((seconds % 3600) // 60)
     seconds = int(seconds % 60)
     return f"{hours:02}:{minutes:02}:{seconds:02}"
-
 
 if __name__ == "__main__":
     # CLI Argument Parsing

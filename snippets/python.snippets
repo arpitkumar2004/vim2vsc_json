@@ -1,5 +1,5 @@
-snippet temp_date
-#  author:  violist
+snippet temp_date "Date"
+#  author:  Morpheous_leo
 #  created: `date +%d.%m.%Y" "%R:%S`
 
 import sys
@@ -8,38 +8,38 @@ input = sys.stdin.readline
 $0
 endsnippet
 
-snippet temp
+snippet temp "system_read_input'
 import sys
 input = sys.stdin.readline
 
 $0
 endsnippet
 
-snippet many
+snippet many "many_input"
 t = int(input())
 for _ in range(t):
     $0
 endsnippet
 
-snippet map
+snippet map "mapping_input"
 map(int, input().split())
 endsnippet
 
-snippet list
+snippet list "listing_input"
 list(map(int, input().split()))
 endsnippet
 
-snippet for
+snippet for "for_loop"
 for i in range(${0}):
 endsnippet
 
 # ----- Algoritmy / datove struktury ----- #
 
-snippet dict
+snippet dict "importing_dict"
 from collections import defaultdict
 endsnippet
 
-snippet Graph
+snippet Graph "Adding_graph"
 class Graph:
     def __init__(self, vertices):
         self.V = vertices
@@ -49,8 +49,8 @@ class Graph:
         self.graph[u].append(v)
 endsnippet
 
-snippet is_bipartite
-# Graf nie je bipartitny, ak obsahuje cyklus s neparnou dlzkou
+snippet is_bipartite "Graph_bipartility"
+# The graph is not bipartite, as it observes a cycle with odds for
 def is_bipartite(graph):
     n = len(graph)
     color = [-1] * n
@@ -69,27 +69,27 @@ def is_bipartite(graph):
     return 1
 endsnippet
 
-snippet toposort
+snippet toposort "Topo_sort"
 def toposort(g):
     n = len(g)
-    vrcholy = [*range(n)]
-    predomnou = [0] * n
-    for v in vrcholy:
-        for sus in g[v]:
-            predomnou[sus] += 1
-    q = [v for v in vrcholy if (predomnou[v] == 0)]
-    poradie = []
+    peaks = [*range(n)]
+    front_door = [0] * n
+    for v in peaks:
+        for i in g[v]:
+            front_door[i] += 1
+    q = [v for v in peaks if (front_door[v] == 0)]
+    order = []
     while (q):
         v = q.pop()
-        poradie.append(v)
-        for sus in g[v]:
-            predomnou[sus] -= 1
-            if (predomnou[sus] == 0):
-                q.append(sus)
-    return poradie[::-1]
+        order.append(v)
+        for i in g[v]:
+            front_door[i] -= 1
+            if (front_door[i] == 0):
+                q.append(i)
+    return order[::-1]
 endsnippet
 
-snippet grid
+snippet grid "checking_grid"
 dx = [1, 0, 0, -1]
 dy = [0, 1, -1, 0]
 
@@ -99,7 +99,7 @@ def valid(x, y):
     return 0
 endsnippet
 
-snippet heap
+snippet heap "defining_heap"
 class OurHeap:
     def __init__(self, items):
         self.heap = [None]
@@ -184,15 +184,6 @@ def dijkstra(start):
                 root[sus_v] = v
                 heapq.heappush(queue, (dist[sus_v], sus_v))
     return dist, root
-endsnippet
-
-snippet path
-cur = d
-path = [cur]
-while (cur != s):
-    cur = parents[cur]
-    path.append(cur)
-path.reverse()
 endsnippet
 
 snippet bs "Binary_search"
@@ -283,7 +274,7 @@ def dfs(start):
                 to_visit.append(sus)
 endsnippet
 
-snippet connected_components_iterative
+snippet connected_components_iterative "connected_components_iterative"
 def dfs():
     n = len(g)
     visited = [0] * len(g)
@@ -302,7 +293,7 @@ def dfs():
     return k
 endsnippet
 
-snippet connected_components_recursive
+snippet connected_components_recursive "connected_components_recursive"
 def dfs1():
     visited = [0] * n
     cnt = 0
@@ -339,7 +330,7 @@ def bfs(start):
     return dist
 endsnippet
 
-snippet bfs_grid
+snippet bfs_grid "bfs_grid_making"
 def bfs(g, start):
     visited = set()
     visited.add(start)
@@ -391,7 +382,7 @@ def sieve(n):
     return prime
 endsnippet
 
-snippet prime_sieve
+snippet prime_sieve "prime_sieving"
 def prime_sieve(n):
     """returns a sieve of primes >= 5 and < n"""
     flag = n % 6 == 2
@@ -429,12 +420,12 @@ def lcm(a, b):
     return a * b // gcd(a, b)
 endsnippet
 
-snippet nCr
+snippet nCr "nCr"
 def nCr(n, k):
     return factorial(n) // (factorial(n - k) * factorial(k))
 endsnippet
 
-snippet mod_nCr
+snippet mod_nCr "mod_nCr"
 def nCr_mod(maxn = 2 * 10 ** 5, mod = 10 ** 9 + 7):
     maxn = min(maxn, mod - 1)
 
@@ -461,7 +452,7 @@ def nCr_mod(maxn = 2 * 10 ** 5, mod = 10 ** 9 + 7):
     return nCr_mod
 endsnippet
 
-snippet fast_mod_expo
+snippet fast_mod_expo "fast_mod_expo"
 def pow(a, b, p):
     res = 1
     a %= p
@@ -475,7 +466,7 @@ def pow(a, b, p):
     return res
 endsnippet
 
-snippet discrete_log
+snippet discrete_log "discrete_log"
 def discrete_log(a, b, mod):
     """
     Returns smallest x > 0 s.t. pow(a, x, mod) == b or None if no such x exists.
@@ -500,7 +491,7 @@ def discrete_log(a, b, mod):
             return n * i - j if (pow(a, n * i - j, mod) == b) else None
 endsnippet
 
-snippet factorization
+snippet factorization "factorization"
 from collections import Counter
 
 def gcd(x, y):
@@ -582,7 +573,7 @@ def all_factors(n):
     return small
 endsnippet
 
-snippet prime_factorization
+snippet prime_factorization "prime_factorization"
 def fast_prime_factorization(n):
     d = [(i + 1) % 2 * 2 for i in range(n + 1)]
     d[0], d[1] = 0, 1
@@ -595,7 +586,7 @@ def fast_prime_factorization(n):
     return d
 endsnippet
 
-snippet fft
+snippet fft "fft"
 import cmath
 
 def fft(a, inv = 0):
@@ -653,9 +644,9 @@ def xor(n):
     return 0
 endsnippet
 
-# Kombinatorika
+# Combinatorics
 
-snippet comb
+snippet comb "Combinatorics"
 import math
 import operator as op
 from functools import reduce
@@ -718,7 +709,7 @@ euler = lambda n, k: sum((1 - 2 * (j & 1)) * nCr(n + 1, j) * ((k + 1 - j) **n ) 
 stirling_2 = lambda n, k: sum(((-1) ** (k - j)) * nCr(k, j) * (j **n ) for j in range(k + 1)) // math.factorial(k)
 endsnippet
 
-snippet divisors
+snippet divisors "divisors"
 def div(n):
     d, large = [], []
     for i in range(1, int(n ** 0.5) + 1):
@@ -729,7 +720,10 @@ def div(n):
     return d + large[::-1]
 endsnippet
 
-snippet fin
+
+snippet fin "Fenwick_Tree"
+# You might use a Fenwick Tree for tasks like calculating the sum of elements in a range or updating elements in an array, where the updates and queries need to be performed efficiently in logarithmic time.
+
 class Fenwick:
     def __init__(self, n):
         self.n = n
@@ -748,7 +742,7 @@ class Fenwick:
         return res
 endsnippet
 
-snippet intervalac
+snippet intervalac "intervalac"
 class intervalac:
     def merge(self, a, b):
         return min(a, b) # Nezabudni zmenit
@@ -783,7 +777,7 @@ class intervalac:
         return self.merge(self.query(l, r, v << 1, tl, mid), self.query(l, r, v << 1 | 1, mid, tr))
 endsnippet
 
-snippet Segtree
+snippet Segtree "Segtree"
 maxn = 1 << 64
 
 class Segtree:
@@ -819,7 +813,7 @@ class Segtree:
         return res
 endsnippet
 
-snippet SortedList
+snippet SortedList 'SortedList"
 from bisect import bisect_left as lower_bound
 from bisect import bisect_right as upper_bound
 
@@ -920,7 +914,7 @@ class SortedList:
         return str(list(self))
 endsnippet
 
-snippet UnionFind
+snippet UnionFind "UnionFind"
 class UnionFind:
     def __init__(self, n):
         self.n = n
@@ -973,7 +967,7 @@ class UnionFind:
         return '\n'.join('{}: {}'.format(r, self.members(r)) for r in self.roots())
 endsnippet
 
-snippet UF
+snippet UF "Union_Find"
 class UnionFind:
     def __init__(self, n):
         self.parent = list(range(n))
@@ -990,7 +984,7 @@ class UnionFind:
         self.parent[self.find(b)] = self.find(a)
 endsnippet
 
-snippet z_algo
+snippet z_algo "z_algo"
 def z_function(s):
     n = len(s)
     res = [0] * n
@@ -1007,7 +1001,7 @@ def z_function(s):
     return res
 endsnippet
 
-snippet tarjan
+snippet tarjan "tarjan"
 def tarjan():
     dfs_num = [None] * n
     dfs_min = [n] * n
@@ -1053,7 +1047,7 @@ def tarjan():
     return sccp
 endsnippet
 
-snippet kosaraju
+snippet kosaraju "kosaraju"
 def kosaraju_dfs(graph, nodes, order, sccp):
     times_seen = [-1] * n
     for start in nodes:
@@ -1090,7 +1084,7 @@ def kosaraju():
     return sccp[::-1]
 endsnippet
 
-snippet hungarian
+snippet hungarian "hungarian"
 def kuhn_munkres(G, TOLERANCE=1e-6):
     """Maximum profit bipartite matching by Kuhn-Munkres
     :param G: weight matrix where G[u][v] is the weight of edge (u,v),
@@ -1155,7 +1149,7 @@ def kuhn_munkres(G, TOLERANCE=1e-6):
     return mu
 endsnippet
 
-snippet tkinter
+snippet tkinter "tkinter"
 import tkinter
 
 root = tkinter.Tk()
