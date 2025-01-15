@@ -12,7 +12,7 @@ Clean JSON Output: The converted files are properly formatted for VS Code.
 
 ## Requirements
 
-Python 3.6+
+    pip requirements.txt
 
 ## How to Use
 
