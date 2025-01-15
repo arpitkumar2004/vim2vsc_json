@@ -18,7 +18,7 @@ Python 3.6+
 
 ### Step 1. Clone the Repository
 
-    https://github.com/arpitkumar2004/vim2vsc_json.git
+    git clone https://github.com/arpitkumar2004/vim2vsc_json.git
     cd vim2vsc_json
 
 
