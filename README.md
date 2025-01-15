@@ -1,7 +1,8 @@
-# Snippet Converter
+# vim2vsc_json Snippet Converter
 ## About
 
 This repository contains a Python script that converts .snippet files (commonly used in Vim or UltiSnips) into Visual Studio Code (VS Code) compatible JSON snippets. It is designed to simplify the process for students and developers who want to migrate their snippets quickly.
+
 ## Features
 
 Bulk Conversion: Converts multiple .snippet files at once.
@@ -14,10 +15,12 @@ Clean JSON Output: The converted files are properly formatted for VS Code.
 Python 3.6+
 
 ## How to Use
+
 1. Clone the Repository
 
-    https://github.com/arpitkumar2004/vim2vsc_json.git
-    cd snippet-converter
+https://github.com/arpitkumar2004/vim2vsc_json.git
+cd vim2vsc_json
+
 
 2. Place Your .snippet Files
 
@@ -25,7 +28,7 @@ Add your .snippet files into a folder (e.g., snippets).
 
 3. Run the Script
 
-    python snippet_converter.py <input_directory> <output_directory>
+python snippet_converter.py <input_directory> <output_directory>
 
 Example: If your .snippet files are in a folder named snippets and you want the converted JSON files in a folder named converted_snippets:
 
