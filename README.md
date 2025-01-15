@@ -16,17 +16,17 @@ Python 3.6+
 
 ## How to Use
 
-1. Clone the Repository
+Step 1. Clone the Repository
 
-https://github.com/arpitkumar2004/vim2vsc_json.git
-cd vim2vsc_json
+    https://github.com/arpitkumar2004/vim2vsc_json.git
+    cd vim2vsc_json
 
 
-2. Place Your .snippet Files
+Step 2. Place Your .snippet Files
 
 Add your .snippet files into a folder (e.g., snippets).
 
-3. Run the Script
+Step 3. Run the Script
 
 python snippet_converter.py <input_directory> <output_directory>
 
@@ -34,14 +34,15 @@ Example: If your .snippet files are in a folder named snippets and you want the 
 
     python snippet_converter.py snippets converted_snippets
 
-4. Import the JSON Files into VS Code
+Step 4. Import the JSON Files into VS Code
 
-    1. Open VS Code.
-    2. Go to File -> Preferences -> User Snippets.
-    3. Choose the language you want (e.g., python.json).
-    4. Copy the content of the converted JSON file into the opened snippet file.
+1. Open VS Code.
+2. Go to File -> Preferences -> User Snippets.
+3. Choose the language you want (e.g., python.json).
+4. Copy the content of the converted JSON file into the opened snippet file.
 
 ### Example
+
 Input (example.snippet):
 
     snippet temp_date "Template with Date and Author"
