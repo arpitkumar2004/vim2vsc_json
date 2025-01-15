@@ -1,0 +1,1169 @@
+snippet temp_date
+#  author:  violist
+#  created: `date +%d.%m.%Y" "%R:%S`
+
+import sys
+input = sys.stdin.readline
+
+$0
+endsnippet
+
+snippet temp
+import sys
+input = sys.stdin.readline
+
+$0
+endsnippet
+
+snippet many
+t = int(input())
+for _ in range(t):
+    $0
+endsnippet
+
+snippet map
+map(int, input().split())
+endsnippet
+
+snippet list
+list(map(int, input().split()))
+endsnippet
+
+snippet for
+for i in range(${0}):
+endsnippet
+
+# ----- Algoritmy / datove struktury ----- #
+
+snippet dict
+from collections import defaultdict
+endsnippet
+
+snippet Graph
+class Graph:
+    def __init__(self, vertices):
+        self.V = vertices
+        self.graph = defaultdict(list)
+  
+    def addEdge(self, u, v):
+        self.graph[u].append(v)
+endsnippet
+
+snippet is_bipartite
+# Graf nie je bipartitny, ak obsahuje cyklus s neparnou dlzkou
+def is_bipartite(graph):
+    n = len(graph)
+    color = [-1] * n
+    for start in range(n):
+        if (color[start] == -1):
+            color[start] = 0
+            stack = [start]
+            while (stack):
+                parent = stack.pop()
+                for child in graph[parent]:
+                    if (color[child] == -1):
+                        color[child] = 1 - color[parent]
+                        stack.append(child)
+                    elif (color[parent] == color[child]):
+                        return 0
+    return 1
+endsnippet
+
+snippet toposort
+def toposort(g):
+    n = len(g)
+    vrcholy = [*range(n)]
+    predomnou = [0] * n
+    for v in vrcholy:
+        for sus in g[v]:
+            predomnou[sus] += 1
+    q = [v for v in vrcholy if (predomnou[v] == 0)]
+    poradie = []
+    while (q):
+        v = q.pop()
+        poradie.append(v)
+        for sus in g[v]:
+            predomnou[sus] -= 1
+            if (predomnou[sus] == 0):
+                q.append(sus)
+    return poradie[::-1]
+endsnippet
+
+snippet grid
+dx = [1, 0, 0, -1]
+dy = [0, 1, -1, 0]
+
+def valid(x, y):
+    if (0 <= x < r and 0 <= y < s): # Doplnit v pripade prekazok
+        return 1
+    return 0
+endsnippet
+
+snippet heap
+class OurHeap:
+    def __init__(self, items):
+        self.heap = [None]
+        self.rank = {}
+        for x in items:
+            self.push(x)
+
+    def __len__(self):
+        return len(self.heap) - 1
+
+    def push(self, x):
+        assert x not in self.rank
+        i = len(self.heap)
+        self.heap.append(x)
+        self.rank[x] = 1
+        self.up(i)
+
+    def pop(self):
+        root = self.heap[1]
+        del self.rank[root]
+        x = self.heap.pop()
+        if (self):
+            self.heap[1] = x
+            self.rank[x] = 1
+            self.down(1)
+        return root
+
+    def up(self, i):
+        x = self.heap[i]
+        while (i > 1 and x < self.heap[i // 2]):
+            self.heap[i] = self.heap[i // 2]
+            self.rank[self.heap[i // 2]] = i
+            i //= 2
+        self.heap[i] = x
+        self.rank[x] = i
+
+    def down(self, i):
+        x = self.heap[i]
+        n = len(self.heap)
+        while (1):
+            left = 2 * i
+            right = left + 1
+            if (right < n and self.heap[right] < x and self.heap[right] < self.heap[left]):
+                self.heap[i] = self.heap[right]
+                self.rank[self.heap[right]] = i
+                i = right
+            elif (left < n and self.heap[left] < x):
+                self.heap[i] = self.heap[left]
+                self.rank[self.heap[left]] = i
+                i = left
+            else:
+                self.heap[i] = x
+                self.rank[x] = i
+                return
+
+    def update(self, old, new):
+        i = self.rank[old]
+        del self.rank[old]
+        self.heap[i] = new
+        self.rank[new] = i
+        if (old < new):
+            self.down(i)
+        else:
+            self.up(i)
+endsnippet
+
+snippet dijkstra "Dijkstra"
+import heapq
+def dijkstra(start):
+    dist = [inf] * len(g)
+    dist[start] = 0
+    root = [-1] * len(g)
+    queue = []
+    heapq.heappush(queue, (dist[start], start))
+    while (queue):
+        w, v = heapq.heappop(queue)
+        if (dist[v] < w):
+            continue
+        for sus_v, sus_w in g[v]:
+            if (w + sus_w < dist[sus_v]):
+                dist[sus_v] = w + sus_w
+                root[sus_v] = v
+                heapq.heappush(queue, (dist[sus_v], sus_v))
+    return dist, root
+endsnippet
+
+snippet path
+cur = d
+path = [cur]
+while (cur != s):
+    cur = parents[cur]
+    path.append(cur)
+path.reverse()
+endsnippet
+
+snippet bs "Binary_search"
+def binary_search(a, t):
+    n = len(a)
+    left = 0
+    right = n - 1
+    while (left <= right):
+        mid = (left + right) >> 1
+        if (a[mid] == t):
+            return mid
+        if (a[mid] < t):
+            left = mid + 1
+        else:
+            right = mid - 1
+    return -1
+endsnippet
+
+snippet	lower_bound "Binary_search_lower_bound"
+def lower_bound(a, t):
+    n = len(a)
+    left = 0
+    right = n - 1
+    ans = -1
+    while (left <= right):
+        mid = (left + right) >> 1
+        if (a[mid] >= t):
+            ans = mid
+            right = mid - 1
+        else:
+            left = mid + 1
+    return ans
+endsnippet
+
+snippet upper_bound "Binaray_search_upper_bound"
+def upper_bound(a, t):
+    n = len(a)
+    left = 0
+    right = n - 1
+    ans = -1
+    while (left <= right):
+        mid = (left + right) >> 1
+        if (a[mid] > t):
+            ans = mid
+            right = mid - 1
+        else:
+            left = mid + 1
+    return ans
+endsnippet
+
+snippet LIS "Longest_increasing_subsequence"
+
+from bisect import bisect_left
+
+def LIS(a):
+    n = len(a)
+    p = [None] * n
+    h = [None]
+    b = [float('-inf')]
+    for i in range(n):
+        if (a[i] > b[-1]):
+            p[i] = h[-1]
+            h.append(i)
+            b.append(a[i])
+        else:
+            k = bisect_left(b, a[i])
+            h[k] = i
+            b[k] = a[i]
+            p[i] = h[k - 1]
+    q = h[-1]
+    s = []
+    while (q is not None):
+        s.append(a[q])
+        q = p[q]
+    return s[::-1]
+endsnippet
+
+snippet dfs "Depth_first_search"
+def dfs(start):
+    visited = [0] * len(g)
+    visited[start] = 1
+    to_visit = [start]
+    while (to_visit):
+        node = to_visit.pop()
+        for sus in graph[node]:
+            if (not visited[sus]):
+                visited[sus] = 1
+                to_visit.append(sus)
+endsnippet
+
+snippet connected_components_iterative
+def dfs():
+    n = len(g)
+    visited = [0] * len(g)
+    k = 0
+    for start in range(len(g)):
+        if (visited[start]):
+            continue
+        k += 1
+        stack = [start]
+        while (stack):
+            n = stack.pop()
+            if (visited[n]):
+                continue
+            visited[n] = 1
+            stack.extend(g[n])
+    return k
+endsnippet
+
+snippet connected_components_recursive
+def dfs1():
+    visited = [0] * n
+    cnt = 0
+    for node in range(n):
+        if (not visited[node]):
+            dfs2(node, visited)
+            cnt += 1
+    return cnt
+
+def dfs2(node, visited):
+    visited[node] = 1
+    for sus in g[node]:
+        if (not visited[sus]):
+            dfs2(sus, visited)
+endsnippet
+
+snippet bfs "Breadth_first_search"
+from collections import deque
+
+def bfs(start):
+    visited = [0] * len(g)
+    visited[start] = 1
+    queue = deque()
+    queue.append(start)
+    dist = [-1] * len(g)
+    dist[start] = 0
+    while (queue):
+        v = queue.popleft()
+        for sus in g[v]:
+            if (not visited[sus]):
+                queue.append(sus)
+                dist[sus] = dist[v] + 1
+                visited[sus] = 1
+    return dist
+endsnippet
+
+snippet bfs_grid
+def bfs(g, start):
+    visited = set()
+    visited.add(start)
+    queue = deque()
+    queue.append(start)
+    dist = defaultdict(lambda : -1)
+    dist[start] = 0
+    root = defaultdict(lambda : (0, 0))
+    while (queue):
+        x, y = queue.popleft()
+        for sus_x, sus_y in [(x + 1, y), (x - 1, y), (x, y + 1), (x, y - 1)]:
+            if ((sus_x, sus_y) in visited or not valid(sus_x, sus_y)):
+                continue
+            queue.append((sus_x, sus_y))
+            dist[(sus_x, sus_y)] = dist[(x, y)] + 1
+            root[(sus_x, sus_y)] = (x, y)
+            visited.add((sus_x, sus_y))
+    return dist, root
+endsnippet
+
+snippet is_prime "Primality_test"
+def is_prime(n):
+    if (n < 5 or n & 1 == 0 or n % 3 == 0):
+        return 2 <= n <= 3
+    s = ((n - 1) & (1 - n)).bit_length() - 1
+    d = n >> s
+    for a in [2, 325, 9375, 28178, 450775, 9780504, 1795265022]:
+        p = pow(a, d, n)
+        if (p == 1 or p == n - 1 or a % n == 0):
+            continue
+        for _ in range(s):
+            p = (p * p) % n
+            if (p == n - 1):
+                break
+        else:
+            return 0
+    return 1
+endsnippet
+
+snippet sieve "Sieve_of_Eratosthenes"
+def sieve(n):
+    prime = [True for i in range(n + 1)]
+    p = 2
+    while (p * p <= n):
+        if (prime[p]):
+            for i in range(p * p, n + 1, p):
+                prime[i] = False
+        p += 1
+    return prime
+endsnippet
+
+snippet prime_sieve
+def prime_sieve(n):
+    """returns a sieve of primes >= 5 and < n"""
+    flag = n % 6 == 2
+    sieve = bytearray((n // 3 + flag >> 3) + 1)
+    for i in range(1, int(n ** 0.5) // 3 + 1):
+        if (not (sieve[i >> 3] >> (i & 7)) & 1):
+            k = (3 * i + 1) | 1
+            for j in range(k * k // 3, n // 3 + flag, 2 * k):
+                sieve[j >> 3] |= 1 << (j & 7)
+            for j in range(k * (k - 2 * (i & 1) + 4) // 3, n // 3 + flag, 2 * k):
+                sieve[j >> 3] |= 1 << (j & 7)
+    return sieve
+
+
+def prime_list(n):
+    """returns a list of primes <= n"""
+    res = []
+    if (n > 1):
+        res.append(2)
+    if (n > 2):
+        res.append(3)
+    if (n > 4):
+        sieve = prime_sieve(n + 1)
+        res.extend(3 * i + 1 | 1 for i in range(1, (n + 1) // 3 + (n % 6 == 1)) if (not (sieve[i >> 3] >> (i & 7)) & 1))
+    return res
+endsnippet
+
+snippet gcd "Greatest_common_divosor"
+def gcd(a, b):
+    return b if (a == 0) else gcd(b % a, a)
+endsnippet
+
+snippet lcm "Lowest_common_divisor"
+def lcm(a, b):
+    return a * b // gcd(a, b)
+endsnippet
+
+snippet nCr
+def nCr(n, k):
+    return factorial(n) // (factorial(n - k) * factorial(k))
+endsnippet
+
+snippet mod_nCr
+def nCr_mod(maxn = 2 * 10 ** 5, mod = 10 ** 9 + 7):
+    maxn = min(maxn, mod - 1)
+
+    fact, inv_fact = [0] * (maxn + 1), [0] * (maxn + 1)
+    fact[0] = 1
+    for i in range(maxn):
+        fact[i + 1] = fact[i] * (i + 1) % mod
+
+    inv_fact[-1] = pow(fact[-1], mod - 2, mod)
+    for i in reversed(range(maxn)):
+        inv_fact[i] = inv_fact[i + 1] * (i + 1) % mod
+
+    def nCr_mod(n, r):
+        res = 1
+        while n or r:
+            a, b = n % mod, r % mod
+            if a < b:
+                return 0
+            res = res * fact[a] % mod * inv_fact[b] % mod * inv_fact[a - b] % mod
+            n //= mod
+            r //= mod
+        return res
+
+    return nCr_mod
+endsnippet
+
+snippet fast_mod_expo
+def pow(a, b, p):
+    res = 1
+    a %= p
+    if (a == 0):
+        return 0
+    while (b > 0):
+        if (b & 1):
+            res = (res * a) % p
+        b >>= 1
+        a = (a * a) % p
+    return res
+endsnippet
+
+snippet discrete_log
+def discrete_log(a, b, mod):
+    """
+    Returns smallest x > 0 s.t. pow(a, x, mod) == b or None if no such x exists.
+    Note: works even if a and mod are not coprime.
+    """
+    n = int(mod ** 0.5) + 1
+
+    # tiny_step[x] = maximum j <= n s.t. b * a^j % mod = x
+    tiny_step, e = {}, 1
+    for j in range(1, n + 1):
+        e = e * a % mod
+        if (e == b):
+            return j
+        tiny_step[b * e % mod] = j
+
+    # find (i, j) s.t. a^(n * i) % mod = b * a^j % mod
+    factor = e
+    for i in range(2, n + 2):
+        e = e * factor % mod
+        if (e in tiny_step):
+            j = tiny_step[e]
+            return n * i - j if (pow(a, n * i - j, mod) == b) else None
+endsnippet
+
+snippet factorization
+from collections import Counter
+
+def gcd(x, y):
+    """greatest common divisor of x and y"""
+    while (y):
+        x, y = y, x % y
+    return x
+
+
+def memodict(f):
+    """memoization decorator for a function taking a single argument"""
+    class memodict(dict):
+        def __missing__(self, key):
+            ret = self[key] = f(key)
+            return ret
+
+    return memodict().__getitem__
+
+def pollard_rho(n):
+    """returns a random factor of n"""
+    if (n & 1) == 0:
+        return 2
+    if (n % 3) == 0:
+        return 3
+
+    s = ((n - 1) & (1 - n)).bit_length() - 1
+    d = n >> s
+    for a in [2, 325, 9375, 28178, 450775, 9780504, 1795265022]:
+        p = pow(a, d, n)
+        if (p == 1 or p == n - 1 or a % n == 0):
+            continue
+        for _ in range(s):
+            prev = p
+            p = (p * p) % n
+            if (p == 1):
+                return gcd(prev - 1, n)
+            if (p == n - 1):
+                break
+        else:
+            for i in range(2, n):
+                x, y = i, (i * i + 1) % n
+                f = gcd(abs(x - y), n)
+                while (f == 1):
+                    x, y = (x * x + 1) % n, (y * y + 1) % n
+                    y = (y * y + 1) % n
+                    f = gcd(abs(x - y), n)
+                if (f != n):
+                    return f
+    return n
+
+@memodict
+def prime_factors(n):
+    """returns a Counter of the prime factorization of n"""
+    if (n <= 1):
+        return Counter()
+    f = pollard_rho(n)
+    return Counter([n]) if (f == n) else prime_factors(f) + prime_factors(n // f)
+
+
+def distinct_factors(n):
+    """returns a list of all distinct factors of n"""
+    factors = [1]
+    for p, exp in prime_factors(n).items():
+        factors += [p ** i * factor for factor in factors for i in range(1, exp + 1)]
+    return factors
+
+
+def all_factors(n):
+    """returns a sorted list of all distinct factors of n"""
+    small, large = [], []
+    for i in range(1, int(n ** 0.5) + 1, 2 if (n & 1) else 1):
+        if (not n % i):
+            small.append(i)
+            large.append(n // i)
+    if (small[-1] == large[-1]):
+        large.pop()
+    large.reverse()
+    small.extend(large)
+    return small
+endsnippet
+
+snippet prime_factorization
+def fast_prime_factorization(n):
+    d = [(i + 1) % 2 * 2 for i in range(n + 1)]
+    d[0], d[1] = 0, 1
+    for i in range(3, n + 1):
+        if d[i]:
+            continue
+        for j in range(i, n + 1, 2 * i):
+            if not d[j]:
+                d[j] = i
+    return d
+endsnippet
+
+snippet fft
+import cmath
+
+def fft(a, inv = 0):
+    n = len(a)
+    w = [cmath.rect(1, (-2 if (inv) else 2) * cmath.pi * i / n) for i in range(n >> 1)]
+    rev = [0] * n
+    for i in range(n):
+        rev[i] = rev[i >> 1] >> 1
+        if (i & 1):
+            rev[i] |= n >> 1
+        if (i < rev[i]):
+            a[i], a[rev[i]] = a[rev[i]], a[i]
+
+    step = 2
+    while (step <= n):
+        half, diff = step >> 1, n // step
+        for i in range(0, n, step):
+            pw = 0
+            for j in range(i, i + half):
+                v = a[j + half] * w[pw]
+                a[j + half] = a[j] - v
+                a[j] += v
+                pw += diff
+        step <<= 1
+
+    if (inv):
+        for i in range(n):
+            a[i] /= n
+
+
+def fft_conv(a, b):
+    s = len(a) + len(b) - 1
+    n = 1 << s.bit_length()
+    a.extend([0.0] * (n - len(a)))
+    b.extend([0.0] * (n - len(b)))
+
+    fft(a), fft(b)
+    for i in range(n):
+        a[i] *= b[i]
+    fft(a, True)
+
+    a = [a[i].real for i in range(s)]
+    return a
+endsnippet
+
+
+snippet xor "XOR_value_of_all_numbers_up_to_N"
+def xor(n):
+    if (n % 4 == 0):
+        return n
+    if (n % 4 == 1):
+        return 1
+    if (n % 4 == 2):
+        return n + 1
+    return 0
+endsnippet
+
+# Kombinatorika
+
+snippet comb
+import math
+import operator as op
+from functools import reduce
+
+def memoize(f):
+    """memoization decorator for a function taking one or more arguments"""
+    class memodict(dict):
+        def __getitem__(self, *key):
+            return dict.__getitem__(self, key)
+
+        def __missing__(self, key):
+            ret = self[key] = f(*key)
+            return ret
+
+    return memodict().__getitem__
+
+
+@memoize
+def catalan_recursive(n):
+    if (n == 0):
+        return 1
+    return (2 * (2 * n - 1) * catalan_recursive(n - 1)) // (n + 1)
+
+
+@memoize
+def euler_recursive(n, k):
+    if (k == 0) or (n - 1 == k):
+        return 1
+    return (n - k) * euler_recursive(n - 1, k - 1) + (k + 1) * euler_recursive(n - 1, k)
+
+
+@memoize
+def stirling_1_recursive(n, k):
+    if (n == k == 0):
+        return 1
+    if (n == 0) or (k == 0):
+        return 0
+    return stirling_1_recursive(n - 1, k - 1) + (n - 1) * stirling_1_recursive(n - 1, k)
+
+
+@memoize
+def stirling_2_recursive(n, k):
+    if (k == 1) or (n == k):
+        return 1
+    return stirling_2_recursive(n - 1, k - 1) + k * stirling_2_recursive(n - 1, k)
+
+
+nCr = lambda n, r: reduce(op.mul, range(n - r + 1, n + 1), 1) // math.factorial(r)
+
+multinomial = lambda k: math.factorial(sum(k)) // reduce(op.mul, (math.factorial(i) for i in k))
+
+derangements = lambda n: int(math.factorial(n) / math.e + 0.5)
+
+bell = lambda n: sum(stirling_2_recursive(k, n) for k in range(n + 1))
+
+catalan = lambda n: nCr(2 * n, n) // (n + 1)
+
+euler = lambda n, k: sum((1 - 2 * (j & 1)) * nCr(n + 1, j) * ((k + 1 - j) **n ) for j in range(k + 1))
+
+stirling_2 = lambda n, k: sum(((-1) ** (k - j)) * nCr(k, j) * (j **n ) for j in range(k + 1)) // math.factorial(k)
+endsnippet
+
+snippet divisors
+def div(n):
+    d, large = [], []
+    for i in range(1, int(n ** 0.5) + 1):
+        if (n % i == 0):
+            d.append(i)
+            if (i * i != n):
+                large.append(n // i)
+    return d + large[::-1]
+endsnippet
+
+snippet fin
+class Fenwick:
+    def __init__(self, n):
+        self.n = n
+        self.fenw = [0] * (self.n + 1)
+
+    def modify(self, pos, value):
+        while (pos < self.n):
+            self.fenw[pos] += value
+            pos |= (pos + 1)
+
+    def get(self, pos):
+        res = 0
+        while (pos >= 0):
+            res += self.fenw[pos]
+            pos = (pos & (pos + 1)) - 1
+        return res
+endsnippet
+
+snippet intervalac
+class intervalac:
+    def merge(self, a, b):
+        return min(a, b) # Nezabudni zmenit
+
+    def __init__(self, a):
+        self.n, self._n = 1, len(a)
+        self.DEFAULT = 1 << 64 # Nezabudni zmenit
+        while (self.n < self._n):
+            self.n *= 2
+        self.strom = [0] * (2 * self.n)
+        for i in range(self._n):
+            self.strom[i + self.n] = a[i]
+        for i in range(self.n - 1, 0, -1):
+            self.strom[i] = self.merge(self.strom[i << 1], self.strom[i << 1 | 1])
+
+    def update(self, i, h):
+        i += self.n
+        self.strom[i] = h
+        predok = i >> 1
+        while (predok > 0):
+            self.strom[predok] = self.merge(self.strom[predok << 1], self.strom[predok << 1 | 1])
+            predok >>= 1
+
+    def query(self, l, r, v = 1, tl = 0, tr = -1):
+        if (tr == -1):
+            tr = self.n
+        if (tr <= l or tl >= r):
+            return self.DEFAULT
+        if (tl >= l and tr <= r):
+            return self.strom[v]
+        mid = (tl + tr) >> 1
+        return self.merge(self.query(l, r, v << 1, tl, mid), self.query(l, r, v << 1 | 1, mid, tr))
+endsnippet
+
+snippet Segtree
+maxn = 1 << 64
+
+class Segtree:
+    def __init__(self, func, a):
+        self.func = func
+        self.n = len(a)
+        self.segtree = [0 for i in range(2 * self.n)]
+        for i in range(self.n):
+            self.segtree[self.n + i] = a[i]
+        for i in range(self.n - 1, 0, -1):
+            self.segtree[i] = self.func([self.segtree[i << 1], self.segtree[i << 1 | 1]])
+
+    def modify(self, pos, value):
+        pos += self.n
+        self.segtree[pos] = value
+        while (pos > 1):
+            pos >>= 1
+            self.segtree[pos] = self.func([self.segtree[pos << 1], self.segtree[pos << 1 | 1]])
+
+    def query(self, left, right):
+        left += self.n
+        right += self.n + 1
+        res = 0 if (self.func == sum) else maxn if (self.func == min) else -maxn
+        while (left < right):
+            if (left & 1):
+                res = self.func([res, self.segtree[left]])
+                left += 1
+            if (right & 1):
+                right -= 1
+                res = self.func([res, self.segtree[right]])
+            left >>= 1
+            right >>= 1
+        return res
+endsnippet
+
+snippet SortedList
+from bisect import bisect_left as lower_bound
+from bisect import bisect_right as upper_bound
+
+class FenwickTree:
+    def __init__(self, x):
+        bit = self.bit = list(x)
+        size = self.size = len(bit)
+        for i in range(size):
+            j = i | (i + 1)
+            if j < size:
+                bit[j] += bit[i]
+
+    def update(self, idx, x):
+        """updates bit[idx] += x"""
+        while idx < self.size:
+            self.bit[idx] += x
+            idx |= idx + 1
+
+    def __call__(self, end):
+        """calc sum(bit[:end])"""
+        x = 0
+        while end:
+            x += self.bit[end - 1]
+            end &= end - 1
+        return x
+
+    def find_kth(self, k):
+        """Find largest idx such that sum(bit[:idx]) <= k"""
+        idx = -1
+        for d in reversed(range(self.size.bit_length())):
+            right_idx = idx + (1 << d)
+            if right_idx < self.size and self.bit[right_idx] <= k:
+                idx = right_idx
+                k -= self.bit[idx]
+        return idx + 1, k
+
+
+class SortedList:
+    block_size = 700
+
+    def __init__(self, iterable=()):
+        self.macro = []
+        self.micros = [[]]
+        self.micro_size = [0]
+        self.fenwick = FenwickTree([0])
+        self.size = 0
+        for item in iterable:
+            self.insert(item)
+
+    def insert(self, x):
+        i = lower_bound(self.macro, x)
+        j = upper_bound(self.micros[i], x)
+        self.micros[i].insert(j, x)
+        self.size += 1
+        self.micro_size[i] += 1
+        self.fenwick.update(i, 1)
+        if len(self.micros[i]) >= self.block_size:
+            self.micros[i:i + 1] = self.micros[i][:self.block_size >> 1], self.micros[i][self.block_size >> 1:]
+            self.micro_size[i:i + 1] = self.block_size >> 1, self.block_size >> 1
+            self.fenwick = FenwickTree(self.micro_size)
+            self.macro.insert(i, self.micros[i + 1][0])
+
+    def pop(self, k=-1):
+        i, j = self._find_kth(k)
+        self.size -= 1
+        self.micro_size[i] -= 1
+        self.fenwick.update(i, -1)
+        return self.micros[i].pop(j)
+
+    def __getitem__(self, k):
+        i, j = self._find_kth(k)
+        return self.micros[i][j]
+
+    def count(self, x):
+        return self.upper_bound(x) - self.lower_bound(x)
+
+    def __contains__(self, x):
+        return self.count(x) > 0
+
+    def lower_bound(self, x):
+        i = lower_bound(self.macro, x)
+        return self.fenwick(i) + lower_bound(self.micros[i], x)
+
+    def upper_bound(self, x):
+        i = upper_bound(self.macro, x)
+        return self.fenwick(i) + upper_bound(self.micros[i], x)
+
+    def _find_kth(self, k):
+        return self.fenwick.find_kth(k + self.size if k < 0 else k)
+
+    def __len__(self):
+        return self.size
+
+    def __iter__(self):
+        return (x for micro in self.micros for x in micro)
+
+    def __repr__(self):
+        return str(list(self))
+endsnippet
+
+snippet UnionFind
+class UnionFind:
+    def __init__(self, n):
+        self.n = n
+        self.parents = [-1] * n
+        self.group = n
+
+    def find(self, x):
+        if (self.parents[x] < 0):
+            return x
+        else:
+            self.parents[x] = self.find(self.parents[x])
+            return self.parents[x]
+
+    def union(self, x, y):
+        x = self.find(x)
+        y = self.find(y)
+
+        if (x == y):
+            return
+        self.group -= 1
+        if (self.parents[x] > self.parents[y]):
+            x, y = y, x
+
+        self.parents[x] += self.parents[y]
+        self.parents[y] = x
+
+    def size(self, x):
+        return -self.parents[self.find(x)]
+
+    def same(self, x, y):
+        return self.find(x) == self.find(y)
+
+    def members(self, x):
+        root = self.find(x)
+        return [i for i in range(self.n) if (self.find(i) == root)]
+
+    def roots(self):
+        return [i for i, x in enumerate(self.parents) if (x < 0)]
+
+    def group_count(self):
+        return self.group
+
+    def all_group_members(self):
+        dic = {r : [] for r in self.roots()}
+        for i in range(self.n):
+            dic[self.find(i)].append(i)
+        return dic
+
+    def __str__(self):
+        return '\n'.join('{}: {}'.format(r, self.members(r)) for r in self.roots())
+endsnippet
+
+snippet UF
+class UnionFind:
+    def __init__(self, n):
+        self.parent = list(range(n))
+ 
+    def find(self, a):
+        acopy = a
+        while a != self.parent[a]:
+            a = self.parent[a]
+        while acopy != a:
+            self.parent[acopy], acopy = a, self.parent[acopy]
+        return a
+ 
+    def union(self, a, b):
+        self.parent[self.find(b)] = self.find(a)
+endsnippet
+
+snippet z_algo
+def z_function(s):
+    n = len(s)
+    res = [0] * n
+    l = r = 0
+    for i in range(1, n):
+        z = res[i - l]
+        if i + z >= r:
+            z = max(r - i, 0)
+            while (i + z < n and s[z] == s[i + z]):
+                z += 1
+            l, r = i, i + z
+        res[i] = z
+    res[0] = n
+    return res
+endsnippet
+
+snippet tarjan
+def tarjan():
+    dfs_num = [None] * n
+    dfs_min = [n] * n
+    waiting = []
+    waits = [0] * n
+    sccp = []
+    dfs_time = 0
+    times_seen = [-1] * n
+    for start in range(n):
+        if (times_seen[start] == -1):
+            times_seen[start] = 0
+            to_visit = [start]
+            while (to_visit):
+                node = to_visit[-1]
+                if (times_seen[node] == 0):
+                    dfs_num[node] = dfs_time
+                    dfs_min[node] = dfs_time
+                    dfs_time += 1
+                    waiting.append(node)
+                    waits[node] = 1
+                children = graph[node]
+                if (times_seen[node] == len(children)):
+                    to_visit.pop()
+                    dfs_min[node] = dfs_num[node]
+                    for child in children:
+                        if (waits[child] and dfs_min[child] < dfs_min[node]):
+                            dfs_min[node] = dfs_min[child]
+                    if (dfs_min[node] == dfs_num[node]):
+                        component = []
+                        while (1):
+                            u = waiting.pop()
+                            waits[u] = 0
+                            component.append(u)
+                            if (u == node):
+                                break
+                        sccp.append(component)
+                else:
+                    child = children[times_seen[node]]
+                    times_seen[node] += 1
+                    if (times_seen[child] == -1):
+                        times_seen[child] = 0
+                        to_visit.append(child)
+    return sccp
+endsnippet
+
+snippet kosaraju
+def kosaraju_dfs(graph, nodes, order, sccp):
+    times_seen = [-1] * n
+    for start in nodes:
+        if (times_seen[start] == -1):
+            to_visit = [start]
+            times_seen[start] = 0
+            sccp.append([start])
+            while (to_visit):
+                node = to_visit[-1]
+                children = graph[node]
+                if (times_seen[node] == len(children)):
+                    to_visit.pop()
+                    order.append(node)
+                else:
+                    child = children[times_seen[node]]
+                    times_seen[node] += 1
+                    if (times_seen[child] == -1):
+                        times_seen[child] = 0
+                        to_visit.append(child)
+                        sccp[-1].append(child)
+
+def reverse(graph):
+    rev_graph = [[] for node in graph]
+    for node, _ in enumerate(graph):
+        for sus in graph[node]:
+            rev_graph[sus].append(node)
+    return rev_graph
+
+def kosaraju():
+    order = []
+    sccp = []
+    kosaraju_dfs(graph, range(n), order, [])
+    kosaraju_dfs(reverse(graph), order[::-1], [], sccp)
+    return sccp[::-1]
+endsnippet
+
+snippet hungarian
+def kuhn_munkres(G, TOLERANCE=1e-6):
+    """Maximum profit bipartite matching by Kuhn-Munkres
+    :param G: weight matrix where G[u][v] is the weight of edge (u,v),
+    :param TOLERANCE: a value with absolute value below tolerance
+                      is considered as being zero.
+                      If G consists of integer or fractional values
+                      then TOLERANCE can be chosen 0.
+    :requires: graph (U,V,E) is complete bi-partite graph with len(U) <= len(V)
+               float('-inf') or float('inf') entries in G
+               are allowed but not None.
+    :returns: matching table from U to V, value of matching
+    :complexity: :math:`O(|U|^2 |V|)`
+    """
+    nU = len(G)
+    U = range(nU)
+    nV = len(G[0])
+    V = range(nV)
+    assert nU <= nV
+    mu = [None] * nU                # empty matching
+    mv = [None] * nV
+    lu = [max(row) for row in G]    # trivial labels
+    lv = [0] * nV
+    for root in U:                  # build an alternate tree
+        au = [False] * nU           # au, av mark nodes...
+        au[root] = True             # ... covered by the tree
+        Av = [None] * nV            # Av[v] successor of v in the tree
+        # for every vertex u, slack[u] := (val, v) such that
+        # val is the smallest slack on the constraints (*)
+        # with fixed u and v being the corresponding vertex
+        slack = [(lu[root] + lv[v] - G[root][v], root) for v in V]
+        while True:
+            (delta, u), v = min((slack[v], v) for v in V if Av[v] is None)
+            assert au[u]
+            if delta > TOLERANCE:   # tree is full
+                for u0 in U:        # improve labels
+                    if au[u0]:
+                        lu[u0] -= delta
+                for v0 in V:
+                    if Av[v0] is not None:
+                        lv[v0] += delta
+                    else:
+                        (val, arg) = slack[v0]
+                        slack[v0] = (val - delta, arg)
+            assert abs(lu[u] + lv[v] - G[u][v]) <= TOLERANCE  # equality
+            Av[v] = u                # add (u, v) to A
+            if mv[v] is None:
+                break                # alternating path found
+            u1 = mv[v]
+            assert not au[u1]
+            au[u1] = True            # add (u1, v) to A
+            for v1 in V:
+                if Av[v1] is None:   # update margins
+                    alt = (lu[u1] + lv[v1] - G[u1][v1], u1)
+                    if slack[v1] > alt:
+                        slack[v1] = alt
+        while v is not None:         # ... alternating path found
+            u = Av[v]                # along path to root
+            prec = mu[u]
+            mv[v] = u                # augment matching
+            mu[u] = v
+            v = prec
+    return mu
+endsnippet
+
+snippet tkinter
+import tkinter
+
+root = tkinter.Tk()
+
+canvas = tkinter.Canvas(width = 500, height = 500)
+canvas.pack()
+
+$0
+
+root.mainloop()
+endsnippet
