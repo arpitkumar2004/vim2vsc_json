@@ -7,7 +7,7 @@ from tqdm import tqdm
 def convert_snippet_to_vscode(snippet_file, output_dir):
     """
     Converts a single .snippet file into a VS Code JSON snippet file.
-    The code is preserved with indentation as it appears in the input file.
+    Handles cases where the description is missing or improperly formatted.
 
     Args:
         snippet_file (str): Path to the .snippet file.
@@ -25,8 +25,12 @@ def convert_snippet_to_vscode(snippet_file, output_dir):
             # Detect the start of a snippet
             if line.startswith("snippet"):
                 parts = line.split(" ", 2)
+
                 trigger = parts[1] if len(parts) > 1 else "unknown"
-                description = parts[2].strip('"') if len(parts) > 2 else "No description"
+                
+                # Check if description exists in quotes, otherwise use the trigger as the description
+                description = parts[2].strip('"') if len(parts) > 2 and '"' in parts[2] else trigger
+
                 current_snippet = {
                     "prefix": trigger,
                     "body": [],
@@ -113,11 +117,11 @@ def format_time(seconds):
     hours = int(seconds // 3600)
     minutes = int((seconds % 3600) // 60)
     seconds = int(seconds % 60)
-    return f"{hours:02}:{minutes:02}:{seconds:02}"
+    return f"{hours:02}:{minutes:02}:{seconds:04}"
 
 if __name__ == "__main__":
     # CLI Argument Parsing
-    parser = argparse.ArgumentParser(description="Convert .snippet files to VS Code JSON format.")
+    parser = argparse.ArgumentParser(description="\nConvert .snippet files to VS Code JSON format.")
     parser.add_argument(
         "input_dir",
         type=str,
